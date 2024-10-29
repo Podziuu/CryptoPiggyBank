@@ -25,6 +25,8 @@ contract PiggyBank {
      * Events
      */
     event DepositMade(address accountAddress, uint256 amount);
+    event WithdrawMade(address accountAddress, uint256 amount);
+    event UnlockTimeExtended(address accountAddress, uint256 unlockTime);
 
     /**
      * Public & External Functions
@@ -33,6 +35,7 @@ contract PiggyBank {
     function deposit(uint256 _unlockTime) public payable {
         deposits[msg.sender] += msg.value;
         extendUnlockTime(_unlockTime);
+        emit DepositMade(msg.sender, msg.value);
     }
 
     function withdraw(uint256 amountToWithdraw) public {
@@ -51,6 +54,7 @@ contract PiggyBank {
         if (!succes) {
             revert PiggyBank__TransferFailed();
         }
+        emit WithdrawMade(msg.sender, amountToWithdraw);
     }
 
     // TODO: Function to extend unlockTime
@@ -59,6 +63,7 @@ contract PiggyBank {
             revert PiggyBank__UnlockTimeCannotBeLessThanItWas();
         }
         unlockTime[msg.sender] = _unlockTime;
+        emit UnlockTimeExtended(msg.sender, _unlockTime);
     }
 
     // TODO: Function to get balance
