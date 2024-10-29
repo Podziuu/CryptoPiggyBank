@@ -32,10 +32,7 @@ contract PiggyBank {
 
     function deposit(uint256 _unlockTime) public payable {
         deposits[msg.sender] += msg.value;
-        if (unlockTime[msg.sender] > _unlockTime) {
-            revert PiggyBank__UnlockTimeCannotBeLessThanItWas();
-        }
-        unlockTime[msg.sender] = _unlockTime;
+        extendUnlockTime(_unlockTime);
     }
 
     function withdraw(uint256 amountToWithdraw) public {
@@ -57,8 +54,20 @@ contract PiggyBank {
     }
 
     // TODO: Function to extend unlockTime
+    function extendUnlockTime(uint256 _unlockTime) public {
+        if (unlockTime[msg.sender] > _unlockTime) {
+            revert PiggyBank__UnlockTimeCannotBeLessThanItWas();
+        }
+        unlockTime[msg.sender] = _unlockTime;
+    }
 
     // TODO: Function to get balance
+    function getBalance() public view returns (uint256) {
+        return deposits[msg.sender];
+    }
 
     // TODO: Function to get unlockTime
+    function getUnlockTime() public view returns (uint256) {
+        return unlockTime[msg.sender];
+    }
 }
