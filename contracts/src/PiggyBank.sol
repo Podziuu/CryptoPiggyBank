@@ -50,14 +50,13 @@ contract PiggyBank {
         if (amount - amountToWithdraw == 0) {
             unlockTime[msg.sender] = 0;
         }
-        (bool succes, ) = payable(msg.sender).call{value: amount}("");
-        if (!succes) {
+        (bool success, ) = payable(msg.sender).call{value: amountToWithdraw}("");
+        if (!success) {
             revert PiggyBank__TransferFailed();
         }
         emit WithdrawMade(msg.sender, amountToWithdraw);
     }
 
-    // TODO: Function to extend unlockTime
     function extendUnlockTime(uint256 _unlockTime) public {
         if (unlockTime[msg.sender] > _unlockTime) {
             revert PiggyBank__UnlockTimeCannotBeLessThanItWas();
@@ -66,12 +65,10 @@ contract PiggyBank {
         emit UnlockTimeExtended(msg.sender, _unlockTime);
     }
 
-    // TODO: Function to get balance
     function getBalance() public view returns (uint256) {
         return deposits[msg.sender];
     }
 
-    // TODO: Function to get unlockTime
     function getUnlockTime() public view returns (uint256) {
         return unlockTime[msg.sender];
     }
