@@ -8,6 +8,7 @@ import { cookieToInitialState } from "wagmi";
 import { getConfig } from "../wagmi";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
+import Navbar from "./components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,12 +29,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-        <body className={inter.className}>
-          <Providers initialState={initialState}>
-            {children}
-            <Toaster />
-          </Providers>
-        </body>
+      <body className={inter.className}>
+        <Providers initialState={initialState}>
+          <Navbar />
+          {children}
+          <Toaster />
+        </Providers>
+      </body>
     </html>
   );
 }
