@@ -17,7 +17,7 @@ const ConnectWallet = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const { signMessageAsync } = useSignMessage();
-  const { address } = useAccount();
+  const { isConnected, address } = useAccount();
   const chainId = useChainId();
   const session = useSession();
 
@@ -35,7 +35,6 @@ const ConnectWallet = () => {
       const signature = await signMessageAsync({
         message: message.prepareMessage(),
       });
-      console.log(signature);
       signIn("credentials", {
         message: JSON.stringify(message),
         redirect: false,
@@ -46,8 +45,6 @@ const ConnectWallet = () => {
       window.alert(err);
     }
   };
-
-  console.log(status);
 
   useEffect(() => {
     if (status === "success") {
@@ -67,11 +64,9 @@ const ConnectWallet = () => {
     }
   }, [status]);
 
-  console.log(shortenAddress(address));
-
   return (
     <>
-      {(session.status === "unauthenticated" || status === "idle") && (
+      {(session.status === "unauthenticated" || !isConnected) && (
         <ConnectWalletButton
           isOpen={isOpen}
           setIsOpen={setIsOpen}
@@ -79,10 +74,10 @@ const ConnectWallet = () => {
           injected={injected}
         />
       )}
-      {session.status === "authenticated" && status === "success" && (
+      {session.status === "authenticated" && isConnected && (
         <Badge className="py-2 px-4 rounded-full">Connected: {shortenAddress(address)}</Badge>
       )}
-      {session.status === "loading" && <div>Loading...</div>}
+      {session.status === "loading" && <Badge className="py-2 px-4 rounded-full">Loading...</Badge>}
     </>
   );
 };
